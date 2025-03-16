@@ -1,6 +1,9 @@
 package com.pm_niraj.kgeet_back;
 
+import com.pm_niraj.kgeet_back.model.Music;
+import com.pm_niraj.kgeet_back.model.Playlist;
 import com.pm_niraj.kgeet_back.service.MusicService;
+import com.pm_niraj.kgeet_back.service.PlaylistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -11,18 +14,17 @@ public class KgeetBackApplication implements CommandLineRunner {
 
 	@Autowired
 	private MusicService musicService;
+	@Autowired
+	private PlaylistService playlistService;
 
 	@Override
 	public void run(String... args) throws Exception {
-		createAllMusic();
-	}
+		Music m1 = musicService.createMusic("Kehi Mitho", "https://www.youtube.com/watch?v=D-mERpuyZV8");
+		Music m2 = musicService.createMusic("Malai nasodha", "https://www.youtube.com/watch?v=D-mERpuyZV8");
+//		Playlist playlist = playlistService.save("myPlaylist");
 
-	private void createAllMusic() {
-		musicService.createMusic("Kehi Mitho", "https://www.youtube.com/watch?v=D-mERpuyZV8");
-		musicService.createMusic("Malai nasodha", "https://www.youtube.com/watch?v=D-mERpuyZV8");
-		musicService.createMusic("Jhareko paat jhai", "https://www.youtube.com/watch?v=D-mERpuyZV8");
-		musicService.createMusic("Jun ko jyoti", "https://www.youtube.com/watch?v=D-mERpuyZV8");
-		System.out.println(musicService.total() + " musics created");
+//		playlistService.addMusicToPlaylist(playlist, m1);
+//		playlistService.addMusicToPlaylist(playlist, m2);
 	}
 
 	public static void main(String[] args) {

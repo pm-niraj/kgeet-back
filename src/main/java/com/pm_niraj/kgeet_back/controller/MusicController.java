@@ -2,8 +2,12 @@ package com.pm_niraj.kgeet_back.controller;
 
 import com.pm_niraj.kgeet_back.dto.MusicDto;
 import com.pm_niraj.kgeet_back.model.Music;
+import com.pm_niraj.kgeet_back.model.Playlist;
 import com.pm_niraj.kgeet_back.repository.MusicRepository;
+import com.pm_niraj.kgeet_back.repository.PlaylistMusicRepository;
+import com.pm_niraj.kgeet_back.repository.PlaylistRepository;
 import com.pm_niraj.kgeet_back.service.MusicService;
+import com.pm_niraj.kgeet_back.service.PlaylistService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,12 +28,18 @@ public class MusicController {
 
     public static final String OUTPUT_DIR = "uploads/";
     private final MusicRepository musicRepository;
+    private final PlaylistRepository playlistRepository;
+    private final PlaylistService playlistService;
     private MusicService musicService;
+    private final PlaylistMusicRepository playlistMusicRepository;
 
     @Autowired
-    public MusicController(MusicService musicService, MusicRepository musicRepository) {
+    public MusicController(MusicService musicService, MusicRepository musicRepository, PlaylistRepository playlistRepository, PlaylistMusicRepository playlistMusicRepository, PlaylistService playlistService) {
         this.musicService = musicService;
         this.musicRepository = musicRepository;
+        this.playlistRepository = playlistRepository;
+        this.playlistMusicRepository = playlistMusicRepository;
+        this.playlistService = playlistService;
     }
 
     @PostMapping
@@ -81,6 +91,21 @@ public class MusicController {
     @GetMapping
     public List<MusicDto> getAllMusics() {
         return musicRepository.findAll().stream().map(MusicDto::new).toList();
+    }
+
+    @GetMapping("/{playlist_name}")
+    public List<MusicDto> getMusicById(@PathVariable("playlist_name") String playlistName) {
+        return playlistMusicRepository.findAllByPlaylistName(playlistName).stream().map(MusicDto::new).toList();
+    }
+
+    @PostMapping("/{playlist_name}/{music_id}")
+    @ResponseStatus(HttpStatus.OK)
+    public MusicDto addMusicToPlaylist(@PathVariable("playlist_name") String playlistName,
+                                       @PathVariable("music_id") int musicId) {
+        Playlist playlist = playlistRepository.findByName(playlistName).get();
+        Music music = musicRepository.findById(musicId).get();
+        playlistService.addMusicToPlaylist(playlist, music);
+        return new MusicDto(music);
     }
 
 }

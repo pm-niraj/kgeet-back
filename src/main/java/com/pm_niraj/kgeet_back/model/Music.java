@@ -3,6 +3,9 @@ package com.pm_niraj.kgeet_back.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 public class Music {
     public Music() {
@@ -35,5 +38,27 @@ public class Music {
     }
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    @Column
+    private String artist;
+
+    public String getArtist() {
+        return artist;
+    }
+
+    public void setArtist(String artist) {
+        this.artist = artist;
+    }
+
+    @OneToMany(mappedBy = "music", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<PlaylistMusic> playlists = new HashSet<>();
+
+    public Set<PlaylistMusic> getPlaylists() {
+        return playlists;
+    }
+
+    public void setPlaylists(Set<PlaylistMusic> playlists) {
+        this.playlists = playlists;
     }
 }
