@@ -1,7 +1,13 @@
 FROM eclipse-temurin:21-alpine-3.21
+
+# Set the working directory
 WORKDIR /app
+
+# Copy the entire project into the container
 COPY . .
-# Copy the entire project
-EXPOSE 8082
+
+# Expose the application port
+EXPOSE 8083
+
+# Run the application in development mode
 CMD ["./mvnw", "spring-boot:run"]
-# Run in development mode
