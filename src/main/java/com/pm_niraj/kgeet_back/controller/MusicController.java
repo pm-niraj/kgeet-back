@@ -53,43 +53,43 @@ public class MusicController {
             Files.createDirectories(Paths.get(OUTPUT_DIR));
 
             // Generate a unique filename
-            String fileName = UUID.randomUUID() + "";
+            String fileName = UUID.randomUUID() + ".mp3";
             String filePath = OUTPUT_DIR + fileName;
 
-            // The URL for the yt-dlp server (running in a separate container)
-            String ytDlpApiUrl = "http://yt-dlp-server:5000/download";  // yt-dlp container URL
+            // Build the yt-dlp command
+            ProcessBuilder processBuilder = new ProcessBuilder(
+                    "yt-dlp", "-f", "bestaudio", "--extract-audio",
+                    "--audio-format", "mp3", "-o", filePath, musicDto.getAudioUrl()
+            );
 
-            // Create the JSON request payload for the yt-dlp API
-            String requestJson = "{\"url\": \"" + musicDto.getAudioUrl() + "\", \"title\" : \"" + fileName + "\"}";
+            // Redirect errors to avoid blocking
+            processBuilder.redirectErrorStream(true);
+            Process process = processBuilder.start();
 
-            // Set up the headers for the request
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Content-Type", "application/json");
-            HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
-
-            // Use RestTemplate to send a POST request to the yt-dlp server
-            RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<String> response = restTemplate.postForEntity(ytDlpApiUrl, entity, String.class);
-
-            // Check if the response indicates success
-            if (response.getStatusCode().is2xxSuccessful()) {
-                System.out.println("Download started successfully!");
-            } else {
-                System.out.println("Error starting download: " + response.getStatusCode());
+            // Read the command output (optional)
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line);
+                }
             }
 
-            // After successful download, create the Music entity
+            // Wait for the process to complete
+            int exitCode = process.waitFor();
+            if (exitCode == 0) {
+                System.out.println("File saved: " + filePath);
+            } else {
+                System.out.println("Error processing video.");
+            }
             Music music = musicService.createMusic(musicDto.getTitle(), fileName);
-
-            // Return the MusicDto object with the created music details
             return new MusicDto(music);
-
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Failed to process the request.");
-            return new MusicDto();  // Return an empty MusicDto in case of error
+            return new MusicDto();
         }
     }
+
 
     @GetMapping
     public List<MusicDto> getAllMusics() {
