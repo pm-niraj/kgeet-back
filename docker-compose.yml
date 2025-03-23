@@ -8,17 +8,17 @@ services:
     container_name: my-spring-boot-app
     ports:
       - "8083:8083"
-    depends_on:
-      - yt-dlp-server
+#    depends_on:
+#      - yt-dlp-server
     restart: unless-stopped
 
-  yt-dlp-server:
-    build:
-      context: ./yt-dlp-server  # Path to the directory with the yt-dlp Dockerfile
-      dockerfile: Dockerfile
-    container_name: yt-dlp-server
-    volumes:
-      - ./uploads:/downloads
-    ports:
-      - "5000:5000"
-    restart: unless-stopped
+#  yt-dlp-server:
+#    build:
+#      context: ./yt-dlp-server  # Path to the directory with the yt-dlp Dockerfile
+#      dockerfile: Dockerfile
+#    container_name: yt-dlp-server
+#    volumes:
+#      - ./uploads:/downloads
+#    ports:
+#      - "5000:5000"
+#    restart: unless-stopped
