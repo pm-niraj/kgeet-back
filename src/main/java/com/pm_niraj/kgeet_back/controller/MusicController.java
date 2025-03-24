@@ -81,6 +81,9 @@ public class MusicController {
             } else {
                 System.out.println("Error processing video.");
             }
+            /**
+             * Artist does not wark here -> yet
+             */
             Music music = musicService.createMusic(musicDto.getTitle(), fileName);
             return new MusicDto(music);
         } catch (Exception e) {
