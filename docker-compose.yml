@@ -8,6 +8,11 @@ services:
     container_name: my-spring-boot-app
     ports:
       - "8083:8083"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8083/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 #    depends_on:
 #      - yt-dlp-server
     restart: unless-stopped
