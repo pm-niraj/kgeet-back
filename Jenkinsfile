@@ -23,7 +23,7 @@ pipeline {
         stage('Start Containers') {
             steps {
                 script {
-                    sh 'docker-compose up -d'
+                    sh 'docker-compose up'
                 }
             }
         }
@@ -31,7 +31,7 @@ pipeline {
                     steps {
                         echo 'Waiting for the app to become healthy...'
                         script {
-                            def maxRetries = 10
+                            def maxRetries = 20
                             def retryCount = 0
                             def success = false
 
@@ -43,7 +43,7 @@ pipeline {
                                 } catch (Exception e) {
                                     retryCount++
                                     echo "App is not ready yet. Retrying (${retryCount}/${maxRetries})..."
-                                    sleep 5
+                                    sleep 10
                                 }
                             }
 
