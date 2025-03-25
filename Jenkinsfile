@@ -27,6 +27,33 @@ pipeline {
                 }
             }
         }
+        stage('Wait for Health Check') {
+                    steps {
+                        echo 'Waiting for the app to become healthy...'
+                        script {
+                            def maxRetries = 10
+                            def retryCount = 0
+                            def success = false
+
+                            while (retryCount < maxRetries) {
+                                try {
+                                    sh 'curl --fail http://localhost:8083/health'
+                                    success = true
+                                    break
+                                } catch (Exception e) {
+                                    retryCount++
+                                    echo "App is not ready yet. Retrying (${retryCount}/${maxRetries})..."
+                                    sleep 5
+                                }
+                            }
+
+                            if (!success) {
+                                error "Spring Boot app failed to start within the timeout period."
+                            }
+                        }
+                    }
+        }
+
 
         stage('Run Tests') {
             steps {
