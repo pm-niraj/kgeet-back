@@ -1,11 +1,11 @@
 version: '3.8'
 
 services:
-  kgeet-back:
+  my-spring-boot-app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: my-spring-boot-app
+    container_name: kgeet
     ports:
       - "8083:8083"
     healthcheck:
