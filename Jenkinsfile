@@ -37,7 +37,7 @@ pipeline {
 
                             while (retryCount < maxRetries) {
                                 try {
-                                    sh 'curl --fail http://localhost:8083/health'
+                                    sh 'curl --fail http://localhost:8083/actuator/health'
                                     success = true
                                     break
                                 } catch (Exception e) {
