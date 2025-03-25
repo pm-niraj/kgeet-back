@@ -60,7 +60,7 @@ pipeline {
                 script {
                     // Add commands for testing the application
                     // For example, using curl to check service health
-                    sh 'curl -f http://localhost:8083/health' // Spring Boot app
+                    sh 'curl -f http://localhost:8083/actuator/health' // Spring Boot app
                     //sh 'curl -f http://localhost:5000/health' // Flask app
                 }
             }
