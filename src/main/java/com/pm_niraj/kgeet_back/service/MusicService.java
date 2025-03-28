@@ -12,8 +12,8 @@ public class MusicService {
         this.musicRepository = musicRepository;
     }
 
-    public Music createMusic(String title, String url){
-        Music music = new Music(title, url);
+    public Music createMusic(String title, String url, String artist){
+        Music music = new Music(title, url, artist);
         return musicRepository.saveAndFlush(music);
     }
 

@@ -84,7 +84,7 @@ public class MusicController {
             /**
              * Artist does not wark here -> yet
              */
-            Music music = musicService.createMusic(musicDto.getTitle(), fileName);
+            Music music = musicService.createMusic(musicDto.getTitle(), fileName, musicDto.getArtist());
             return new MusicDto(music);
         } catch (Exception e) {
             e.printStackTrace();

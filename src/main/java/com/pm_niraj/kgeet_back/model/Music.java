@@ -9,11 +9,12 @@ import java.util.Set;
 @Entity
 public class Music {
     public Music() {
-        this(null, null);
+        this(null, null, null);
     }
-    public Music(String title, String url){
+    public Music(String title, String url, String artist){
         this.title = title;
         this.url = url;
+        this.artist = artist;
     }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

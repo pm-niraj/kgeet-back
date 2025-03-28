@@ -19,8 +19,8 @@ public class KgeetBackApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		Music m1 = musicService.createMusic("Kehi Mitho", "https://www.youtube.com/watch?v=D-mERpuyZV8");
-		Music m2 = musicService.createMusic("Malai nasodha", "https://www.youtube.com/watch?v=D-mERpuyZV8");
+//		Music m1 = musicService.createMusic("Kehi Mitho", "https://www.youtube.com/watch?v=D-mERpuyZV8");
+//		Music m2 = musicService.createMusic("Malai nasodha", "https://www.youtube.com/watch?v=D-mERpuyZV8");
 //		Playlist playlist = playlistService.save("myPlaylist");
 
 //		playlistService.addMusicToPlaylist(playlist, m1);
