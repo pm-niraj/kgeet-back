@@ -8,6 +8,7 @@ import com.pm_niraj.kgeet_back.repository.PlaylistMusicRepository;
 import com.pm_niraj.kgeet_back.repository.PlaylistRepository;
 import com.pm_niraj.kgeet_back.service.MusicService;
 import com.pm_niraj.kgeet_back.service.PlaylistService;
+import com.pm_niraj.kgeet_back.service.SongUpdateService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -35,14 +36,18 @@ public class MusicController {
     private final PlaylistService playlistService;
     private MusicService musicService;
     private final PlaylistMusicRepository playlistMusicRepository;
+    private final SongUpdateService songUpdateService;
 
     @Autowired
-    public MusicController(MusicService musicService, MusicRepository musicRepository, PlaylistRepository playlistRepository, PlaylistMusicRepository playlistMusicRepository, PlaylistService playlistService) {
+    public MusicController(MusicService musicService, MusicRepository musicRepository,
+                           PlaylistRepository playlistRepository, PlaylistMusicRepository playlistMusicRepository,
+                           PlaylistService playlistService, SongUpdateService songUpdateService) {
         this.musicService = musicService;
         this.musicRepository = musicRepository;
         this.playlistRepository = playlistRepository;
         this.playlistMusicRepository = playlistMusicRepository;
         this.playlistService = playlistService;
+        this.songUpdateService = songUpdateService;
     }
 
     @PostMapping
@@ -58,7 +63,7 @@ public class MusicController {
 
             // Build the yt-dlp command
             ProcessBuilder processBuilder = new ProcessBuilder(
-                    "yt-dlp", "-f", "bestaudio", "--extract-audio",
+                    "yt-dlp", "-f", "bestaudio", "--progress", "--extract-audio",
                     "--audio-format", "mp3", "-o", filePath, musicDto.getAudioUrl()
             );
 
@@ -71,14 +76,23 @@ public class MusicController {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     System.out.println(line);
+                    String progress = line.startsWith("[download]")?line:null;
+                    if(progress != null){
+                        songUpdateService.sendUpdate("{\"downloaded\":\"" + progress + "\"}");
+                    }
+                    else{
+                        songUpdateService.sendUpdate("{\"message\":\"" + line + "\"}");
+                    }
                 }
             }
-
             // Wait for the process to complete
             int exitCode = process.waitFor();
             if (exitCode == 0) {
+                songUpdateService.sendUpdate("{\"message\":\"Operation complete.\"}");
                 System.out.println("File saved: " + filePath);
+//                songUpdateService.sendUpdate(filePath);
             } else {
+                songUpdateService.sendUpdate("{\"message\":\"Failed to process.\"}");
                 System.out.println("Error processing video.");
             }
             /**
@@ -96,6 +110,7 @@ public class MusicController {
 
     @GetMapping
     public List<MusicDto> getAllMusics() {
+        songUpdateService.sendUpdate("{\"message\": \"Test Update hello 123\"}");
         return musicRepository.findAll().stream().map(MusicDto::new).toList();
     }
 
