@@ -1,22 +1,26 @@
-FROM eclipse-temurin:21-alpine-3.21
+# Use Maven base image with Java 21 and Alpine
+FROM maven:3.9.6-eclipse-temurin-21-alpine AS build
 
-# Set the working directory
+# Set working directory inside container
 WORKDIR /app
-# Install yt-dlp and other dependencies
+
+# Install Python, pip, ffmpeg, and yt-dlp
 RUN apk add --no-cache python3 py3-pip curl ffmpeg \
     && python3 -m venv /opt/venv \
     && /opt/venv/bin/pip install yt-dlp
 
-# Add the virtual environment to PATH
+# Make venv available to PATH
 ENV PATH="/opt/venv/bin:$PATH"
 
-# Copy Maven dependencies and Spring Boot project
+# Copy all files into container
 COPY . .
-# Install Maven (if not already included in the image)
-RUN apk add --no-cache maven
 
-# Expose the application port
+# Ensure Maven wrapper is executable
+RUN chmod +x mvnw
+
+# Expose application port
 EXPOSE 8083
 
-# Run the application in development mode
+# Default command to run the Spring Boot app
 CMD ["./mvnw", "spring-boot:run"]
+
