@@ -34,7 +34,7 @@ Build and run the Docker container:
 ```bash
 docker build -t kgeet-back .
 docker run -p 8083:8083 kgeet-back
-
+```
 ### See open endpoints
 <img width="1467" height="841" alt="image" src="https://github.com/user-attachments/assets/ada20b24-2d6f-4a96-9792-e3b1430f8557" />
 <img width="1468" height="552" alt="image" src="https://github.com/user-attachments/assets/283a6642-a8d1-454f-a111-7bf36df6ce14" />
