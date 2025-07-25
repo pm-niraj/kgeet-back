@@ -6,6 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: kgeet
+    network_mode: "host"
     ports:
       - "8083:8083"
     healthcheck:

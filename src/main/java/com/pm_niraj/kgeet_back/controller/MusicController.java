@@ -85,19 +85,14 @@ public class MusicController {
                     }
                 }
             }
-            // Wait for the process to complete
             int exitCode = process.waitFor();
             if (exitCode == 0) {
                 songUpdateService.sendUpdate("{\"message\":\"Operation complete.\"}");
                 System.out.println("File saved: " + filePath);
-//                songUpdateService.sendUpdate(filePath);
             } else {
                 songUpdateService.sendUpdate("{\"message\":\"Failed to process.\"}");
                 System.out.println("Error processing video.");
             }
-            /**
-             * Artist does not wark here -> yet
-             */
             Music music = musicService.createMusic(musicDto.getTitle(), fileName, musicDto.getArtist());
             return new MusicDto(music);
         } catch (Exception e) {
